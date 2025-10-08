@@ -7,7 +7,16 @@ defmodule Lab3.MixProject do
       version: "0.1.0",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
+      escript: escript(),
       deps: deps()
+    ]
+  end
+
+  defp escript do
+    [
+      main_module: InterpolationApp.CLI,
+      path: "./out/interpolation_app",
+      name: "interpolation_app"
     ]
   end
 
