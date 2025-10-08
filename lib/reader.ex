@@ -1,4 +1,4 @@
-defmodule Reader do
+defmodule IOx.Reader do
   use GenServer
   alias Types.Point
 
@@ -35,7 +35,8 @@ defmodule Reader do
   defp parse_csv_line(line) do
     case String.split(line, ";", parts: 2) do
       [sx, sy] ->
-        with {x, ""} <- Float.parse(sx), {y, ""} <- Float.parse(sy) do
+        with {x, ""} <- Float.parse(sx),
+             {y, ""} <- Float.parse(sy) do
           {:ok, %Point{x: x, y: y}}
         else
           _ -> {:error, line}

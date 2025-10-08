@@ -8,7 +8,9 @@ defmodule Interp.LagrangeServer do
 
   @impl true
   def init(opts),
-    do: {:ok, %{step: Keyword.fetch!(opts, :step), n: Keyword.fetch!(opts, :n), buf: []}}
+    do:
+      {:ok,
+       %{step: Keyword.fetch!(opts, :step), n: Keyword.fetch!(opts, :n), buf: [], first?: true}}
 
   @impl true
   def handle_cast({:point, %Point{} = p}, s) do
@@ -20,18 +22,23 @@ defmodule Interp.LagrangeServer do
       ys = Enum.map(buf, & &1.y)
       {a, b} = Window.central_segment(buf)
 
-      Sampler.between(a, b, s.step)
+      Sampler.between(a, b, s.step, s.first?)
       |> Stream.each(fn x ->
         y = lagrange(xs, ys, x)
         Pipeline.Printer.print(%Sample{x: x, y: y, alg: :lagrange})
       end)
       |> Stream.run()
-    end
 
-    {:noreply, s}
+      {:noreply, %{s | first?: false}}
+    else
+      {:noreply, s}
+    end
   end
 
-  def handle_cast(:eof, s), do: {:noreply, s}
+  def handle_cast(:eof, s) do
+    Pipeline.Printer.flush(:lagrange)
+    {:stop, :normal, s}
+  end
 
   defp lagrange(xs, ys, x) do
     n = length(xs)

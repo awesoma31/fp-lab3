@@ -1,14 +1,8 @@
 defmodule InterpolationApp.CLI do
-  @moduledoc false
-  alias Pipeline.Printer
-
   @usage """
   usage:
     lab_interp [--linear] [--lagrange] [--newton] [--gauss]
                --step <h> [-n <k>] [--precision 6]
-  notes:
-    input: CSV ';' from stdin, sorted by x
-    -n applies to lagrange/newton/gauss (window size), for gauss use odd k.
   """
 
   def main(argv) do
@@ -22,23 +16,24 @@ defmodule InterpolationApp.CLI do
           step: :float,
           n: :integer,
           precision: :integer
+        ],
+        aliases: [
+          l: :linear,
+          g: :gauss,
+          N: :newton,
+          L: :lagrange,
+          s: :step,
+          n: :n,
+          p: :precision
         ]
       )
 
-    h =
-      case opts[:step] do
-        nil ->
-          IO.puts(:stderr, @usage)
-          System.halt(2)
-
-        val ->
-          val
-      end
-
+    h = opts[:step] || abort_usage()
     n = opts[:n] || 4
     prec = opts[:precision] || 6
+    alg_count = Enum.count([opts[:linear], opts[:lagrange], opts[:newton], opts[:gauss]], & &1)
 
-    {:ok, _} = Printer.start_link(precision: prec)
+    {:ok, _} = Pipeline.Printer.start_link(precision: prec, total: alg_count, parent: self())
 
     algs =
       []
@@ -51,20 +46,18 @@ defmodule InterpolationApp.CLI do
       end)
       |> maybe_start(:gauss, opts[:gauss], fn -> Interp.GaussServer.start_link(step: h, n: n) end)
 
-    if algs == [] do
-      IO.puts(:stderr, "choose at least one method")
-      System.halt(2)
-    end
+    {:ok, _} = IOx.Reader.start_link(algs: algs)
 
-    {:ok, _rd} = Reader.start_link(algs: algs)
-    Process.sleep(:infinity)
+    receive do
+      :done -> :ok
+    end
   end
 
-  defp maybe_start(list, _name, false, _fun), do: list
-  defp maybe_start(list, _name, nil, _fun), do: list
+  defp maybe_start(list, _name, true, fun), do: [elem(fun.(), 1) | list]
+  defp maybe_start(list, _, _, _), do: list
 
-  defp maybe_start(list, _name, true, fun) do
-    {:ok, pid} = fun.()
-    [pid | list]
+  defp abort_usage() do
+    IO.puts(:stderr, @usage)
+    System.halt(2)
   end
 end
