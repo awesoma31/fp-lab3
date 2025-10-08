@@ -1,5 +1,6 @@
 defmodule Util.Sampler do
   @moduledoc false
+
   @eps 1.0e-12
 
   def between(x0, x1, h, include_left? \\ true) when h > 0 do

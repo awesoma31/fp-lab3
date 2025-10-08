@@ -1,4 +1,6 @@
 defmodule InterpolationApp.CLI do
+  @moduledoc false
+
   @usage """
   usage:
     lab_interp [--linear] [--lagrange] [--newton] [--gauss]
@@ -56,7 +58,7 @@ defmodule InterpolationApp.CLI do
   defp maybe_start(list, _name, true, fun), do: [elem(fun.(), 1) | list]
   defp maybe_start(list, _, _, _), do: list
 
-  defp abort_usage() do
+  defp abort_usage do
     IO.puts(:stderr, @usage)
     System.halt(2)
   end

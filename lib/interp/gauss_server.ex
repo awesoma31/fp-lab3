@@ -1,4 +1,6 @@
 defmodule Interp.GaussServer do
+  @moduledoc false
+
   use GenServer
   alias Types.Point
 
@@ -25,7 +27,8 @@ defmodule Interp.GaussServer do
       if Enum.max(hvals) - Enum.min(hvals) >= tol do
         IO.puts(
           :stderr,
-          "[gauss] non-uniform window skipped: #{Enum.map(hvals, &Float.round(&1, 6)) |> Enum.join(", ")}"
+          "[gauss] non-uniform window skipped: " <>
+            Enum.map_join(hvals, ", ", &Float.round(&1, 6))
         )
 
         {:noreply, %{s | first?: false}}

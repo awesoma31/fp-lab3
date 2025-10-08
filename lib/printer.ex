@@ -1,4 +1,6 @@
 defmodule Pipeline.Printer do
+  @moduledoc false
+
   use GenServer
   alias Types.Sample
 

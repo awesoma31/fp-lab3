@@ -1,4 +1,6 @@
 defmodule IOx.Reader do
+  @moduledoc false
+
   use GenServer
   alias Types.Point
 

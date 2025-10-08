@@ -1,8 +1,10 @@
 defmodule Interp.NewtonServer do
+  @moduledoc false
+
   use GenServer
   alias Types.{Point, Sample}
-  alias Util.Sampler
   alias Interp.Window
+  alias Util.Sampler
 
   def start_link(opts), do: GenServer.start_link(__MODULE__, opts)
 

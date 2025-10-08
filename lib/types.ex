@@ -1,4 +1,13 @@
 defmodule Types do
-  defmodule Point, do: defstruct([:x, :y])
-  defmodule Sample, do: defstruct([:x, :y, :alg])
+  @moduledoc false
+
+  defmodule Point do
+    @moduledoc false
+    defstruct([:x, :y])
+  end
+
+  defmodule Sample do
+    @moduledoc false
+    defstruct([:x, :y, :alg])
+  end
 end

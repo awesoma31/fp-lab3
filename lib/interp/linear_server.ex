@@ -1,4 +1,6 @@
 defmodule Interp.LinearServer do
+  @moduledoc false
+
   use GenServer
   alias Types.{Point, Sample}
   alias Util.Sampler
