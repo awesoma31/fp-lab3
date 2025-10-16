@@ -61,5 +61,6 @@ defmodule InterpolationApp.CLI do
   defp abort_usage do
     IO.puts(:stderr, @usage)
     System.halt(2)
+    exit(2)
   end
 end
