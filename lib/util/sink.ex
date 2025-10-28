@@ -1,0 +1,5 @@
+defmodule Pipeline.Sink do
+  @callback start_link(keyword) :: GenServer.on_start()
+  @callback print(Types.Sample.t()) :: :ok
+  @callback flush(atom) :: :ok
+end

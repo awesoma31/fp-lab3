@@ -4,8 +4,17 @@ defmodule Pipeline.Printer do
   use GenServer
   alias Types.Sample
 
-  def start_link(opts),
-    do: GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+  @behaviour Pipeline.Sink
+
+  @impl true
+  def start_link(opts), do: GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+  @impl true
+  def print(%Sample{} = s), do: GenServer.cast(__MODULE__, {:sample, s})
+  @impl true
+  def flush(_alg), do: GenServer.cast(__MODULE__, :flush)
+
+  # def start_link(opts),
+  #   do: GenServer.start_link(__MODULE__, opts, name: __MODULE__)
 
   @impl true
   def init(opts) do
@@ -18,8 +27,8 @@ defmodule Pipeline.Printer do
      }}
   end
 
-  def print(%Sample{} = s), do: GenServer.cast(__MODULE__, {:sample, s})
-  def flush(alg), do: GenServer.cast(__MODULE__, {:flush, alg})
+  # def print(%Sample{} = s), do: GenServer.cast(__MODULE__, {:sample, s})
+  # def flush(alg), do: GenServer.cast(__MODULE__, {:flush, alg})
 
   @impl true
   def handle_cast({:sample, %{x: x, y: y, alg: alg}}, s) do
