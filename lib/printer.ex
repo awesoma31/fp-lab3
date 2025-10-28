@@ -13,9 +13,6 @@ defmodule Pipeline.Printer do
   @impl true
   def flush(_alg), do: GenServer.cast(__MODULE__, :flush)
 
-  # def start_link(opts),
-  #   do: GenServer.start_link(__MODULE__, opts, name: __MODULE__)
-
   @impl true
   def init(opts) do
     {:ok,
@@ -26,9 +23,6 @@ defmodule Pipeline.Printer do
        done: 0
      }}
   end
-
-  # def print(%Sample{} = s), do: GenServer.cast(__MODULE__, {:sample, s})
-  # def flush(alg), do: GenServer.cast(__MODULE__, {:flush, alg})
 
   @impl true
   def handle_cast({:sample, %{x: x, y: y, alg: alg}}, s) do
