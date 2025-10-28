@@ -44,7 +44,7 @@ defmodule Interp.GaussServer do
         |> Stream.each(fn x ->
           p1 = (x - x0) / h0
           y = gauss_central(p1, diff, mid)
-          Pipeline.Printer.print(%Types.Sample{x: x, y: y, alg: :gauss})
+          Pipeline.SinkRouter.print(%Types.Sample{x: x, y: y, alg: :gauss})
         end)
         |> Stream.run()
 
@@ -56,7 +56,7 @@ defmodule Interp.GaussServer do
   end
 
   def handle_cast(:eof, s) do
-    Pipeline.Printer.flush(:gauss)
+    Pipeline.SinkRouter.flush(:gauss)
     {:stop, :normal, s}
   end
 

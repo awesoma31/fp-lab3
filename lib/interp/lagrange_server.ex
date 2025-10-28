@@ -27,7 +27,7 @@ defmodule Interp.LagrangeServer do
       Sampler.between(a, b, s.step, s.first?)
       |> Stream.each(fn x ->
         y = lagrange(xs, ys, x)
-        Pipeline.Printer.print(%Sample{x: x, y: y, alg: :lagrange})
+        Pipeline.SinkRouter.print(%Sample{x: x, y: y, alg: :lagrange})
       end)
       |> Stream.run()
 
@@ -38,7 +38,7 @@ defmodule Interp.LagrangeServer do
   end
 
   def handle_cast(:eof, s) do
-    Pipeline.Printer.flush(:lagrange)
+    Pipeline.SinkRouter.flush(:lagrange)
     {:stop, :normal, s}
   end
 

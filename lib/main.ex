@@ -35,7 +35,7 @@ defmodule InterpolationApp.CLI do
     prec = opts[:precision] || 6
     alg_count = Enum.count([opts[:linear], opts[:lagrange], opts[:newton], opts[:gauss]], & &1)
 
-    {:ok, _} = Pipeline.Printer.start_link(precision: prec, total: alg_count, parent: self())
+    {:ok, _} = Pipeline.SinkRouter.start_link(precision: prec, total: alg_count, parent: self())
 
     algs =
       []

@@ -23,7 +23,7 @@ defmodule Interp.LinearServer do
     Sampler.between(p0.x, p1.x, h, first?)
     |> Stream.each(fn x ->
       y = p0.y + m * (x - p0.x)
-      Pipeline.Printer.print(%Sample{x: x, y: y, alg: :linear})
+      Pipeline.SinkRouter.print(%Sample{x: x, y: y, alg: :linear})
     end)
     |> Stream.run()
 
@@ -31,7 +31,7 @@ defmodule Interp.LinearServer do
   end
 
   def handle_cast(:eof, s) do
-    Pipeline.Printer.flush(:linear)
+    Pipeline.SinkRouter.flush(:linear)
     {:stop, :normal, s}
   end
 end

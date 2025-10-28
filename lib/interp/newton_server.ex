@@ -28,7 +28,7 @@ defmodule Interp.NewtonServer do
       Sampler.between(a, b, s.step, s.first?)
       |> Stream.each(fn x ->
         y = horner_newton(xs, coeffs, x)
-        Pipeline.Printer.print(%Sample{x: x, y: y, alg: :newton})
+        Pipeline.SinkRouter.print(%Sample{x: x, y: y, alg: :newton})
       end)
       |> Stream.run()
 
@@ -39,7 +39,7 @@ defmodule Interp.NewtonServer do
   end
 
   def handle_cast(:eof, s) do
-    Pipeline.Printer.flush(:newton)
+    Pipeline.SinkRouter.flush(:newton)
     {:stop, :normal, s}
   end
 
